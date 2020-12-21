@@ -6,7 +6,7 @@ Over the last few months I have left this project on hold due to IRL issues, how
 # XAHK
 Auto Key Clicker for Minecraft - Under request from Xisuma<br>
 Developed for use with vanilla Minecraft and tested with 1.14, 1.15<br>
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/monpjc/XAHK)](https://github.com/monpjc/XAHK/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/monpjc/XAHK)](https://github.com/ogruendel/XAHK/releases/tag/v0.4.1)
 [![LICENSE](https://img.shields.io/github/license/monpjc/XAHK)](https://github.com/monpjc/XAHK/blob/master/LICENSE)
 
 ## Table of contents
@@ -35,8 +35,8 @@ To continue development past inital concept design and release to a release that
 
 ## Installation and Usage
 
-1. Download and Install AutoHotkey; [GitHub Releases](https://github.com/Lexikos/AutoHotkey_L/releases)
-2. Download the X-AHK AutoHotkey script; [GitHub Releases](https://github.com/monpjc/XAHK/releases)
+1. Download and Install AutoHotkey; [GitHub Releases](https://github.com/ogruendel/XAHK/releases/)
+2. Download the X-AHK AutoHotkey script; [GitHub Releases](https://github.com/ogruendel/XAHK/releases/tag/v0.4.1)
 3. Run the script and follow on-screen instructions; the [YouTube video](https://youtu.be/-wKW0OovGK4?t=280) by [xisumavoid](https://www.youtube.com/channel/UCU9pX8hKcrx06XfOB-VQLdw) also contains some additional instruction.
 
 ## YouTube Video
