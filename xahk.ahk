@@ -25,6 +25,7 @@ ProgState := 0
 ; 2: FishingMode	- Enter Fishing Mode
 ; 3: ConcreteMode	- Enter Concrete Mode
 ; 4: MobGrindMode	- Enter Mob Grinder Mode
+; 5: MiningMode		- Enter Mining Mode
 
 ;===================================================================================================
 ;Shortcuts
@@ -37,6 +38,7 @@ Hotkey  !^m,	MobGrind		; Pressing ctrl + alt + m will start mob grinding
 Hotkey	!^s,	Stop			; Pressing ctrl + alt + s will stop it
 Hotkey  !^w,    SelectWindow 	;Allows user to select window to control by hovering mouse over it and
 								;Pressing ctrl + alt + w
+Hotkey  !^p, 	Mining			;Pressing ctrl + alt + p will start automatically mining
 
 ;===================================================================================================
 ;Menu
@@ -48,6 +50,7 @@ Menu, OptionsMenu, Add, Fishing, MenuFishing
 Menu, OptionsMenu, Add, AFK Mob, MenuAFK
 Menu, OptionsMenu, Add, Concrete, MenuConcrete
 Menu, OptionsMenu, Add, JumpFlying, MenuJumpFly
+Menu, OptionsMenu, Add, Mining, MenuMining
 Menu, ClickerMenu, Add, File, :FileMenu
 Menu, ClickerMenu, Add, Help, :HelpMenu
 Menu, ClickerMenu, Add, Options, :OptionsMenu
@@ -197,6 +200,25 @@ MenuJumpFly:
 	Return
 }
 ;===================================================================================================
+; Switch to Mining mode and update window
+MenuMining:
+{
+	; Stop and current active AHK process
+	BreakLoop := 1
+
+	Gui, Destroy
+	Gui, Show, w500 h500, Temp
+	Gui, Menu, ClickerMenu
+	Gui, Add, Text,, Target Window Title : %targettitle%
+	Gui, Add, Text,, Windows HWIND is : %id%
+	Gui, Add, Text,, CURRENT AVALIBLE OPTIONS: 
+	Gui, Add, Text,, o- Pressing ctrl + alt + p will start to mine
+	Gui, Show,, Minecraft X-AHK V0.4
+
+	ProgState := 5
+	Return
+}
+;===================================================================================================
 ; Called when Ctrl+Alt+E is pressed.
 ; NOTE: Target window MUST be in focus for this to work
 JumpFly:
@@ -310,6 +332,29 @@ MobGrind:
 	ControlClick, , ahk_id %id%, ,Right, , NAU
 	ControlClick, , ahk_id %id%, ,Left, ,NAU
 	Return
+}
+;Called when Ctrl+Alt+P is pressed
+Mining:
+{
+if (ProgState != 5)
+		Return
+		
+	BreakLoop := 0
+	Delay := 0
+	Sleep 500
+	While (BreakLoop = 0)
+	{
+		;on each loop send RIGHT key down as it can be lost when switching focus
+		ControlClick, , ahk_id %id%, ,Right, , NAD
+		ControlClick, , ahk_id %id%, ,Left, , NAD
+		
+		if (BreakLoop = 1)
+		{
+			; On Ctrl+Alt+S detected forces a RIGHT mouse key UP
+			ControlClick, , ahk_id %id%, ,Right, , NAU
+			Return
+		}
+	}
 }
 ;==================================================================================================
 ; Called when Ctrl+Alt+S is pressed at ANYTIME
