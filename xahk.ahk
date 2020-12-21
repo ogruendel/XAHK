@@ -7,7 +7,7 @@ SetTitleMatchMode 2
 SetWorkingDir %A_ScriptDir%
 ;==================================================================================================
 ; Globle values
-wintitle := Minecraft X-AHK V0.4
+wintitle := Minecraft X-AHK V0.4.1
 targettitle := none
 targetwinclass := GLFW30 ;This is the Class of a Java program used to check we have a Minecraft prog
 ModeText := Empty
