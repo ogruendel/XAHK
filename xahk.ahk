@@ -7,7 +7,7 @@ SetTitleMatchMode 2
 SetWorkingDir %A_ScriptDir%
 ;==================================================================================================
 ; Globle values
-wintitle := Minecraft X-AHK V0.4.1
+wintitle := Minecraft X-AHK V0.4
 targettitle := none
 targetwinclass := GLFW30 ;This is the Class of a Java program used to check we have a Minecraft prog
 ModeText := Empty
@@ -36,9 +36,10 @@ Hotkey  !^e,	JumpFly			; Pressing ctrl + alt + e will dubble hit space and fire 
 Hotkey  !^c,	Concrete		; Pressing ctrl + alt + c will start concrete farming
 Hotkey  !^m,	MobGrind		; Pressing ctrl + alt + m will start mob grinding
 Hotkey	!^s,	Stop			; Pressing ctrl + alt + s will stop it
+Hotkey  !^p, 	Mining			;Pressing ctrl + alt + p will start automatically mining
+Hotkey	!^k,	RaidFarm		;Pressing ctrl + alt + k will allow you to use afk raid farms (Same as mob grind, just without holding right click)
 Hotkey  !^w,    SelectWindow 	;Allows user to select window to control by hovering mouse over it and
 								;Pressing ctrl + alt + w
-Hotkey  !^p, 	Mining			;Pressing ctrl + alt + p will start automatically mining
 
 ;===================================================================================================
 ;Menu
@@ -51,6 +52,7 @@ Menu, OptionsMenu, Add, AFK Mob, MenuAFK
 Menu, OptionsMenu, Add, Concrete, MenuConcrete
 Menu, OptionsMenu, Add, JumpFlying, MenuJumpFly
 Menu, OptionsMenu, Add, Mining, MenuMining
+Menu, OptionsMenu, Add, Raid, MenuRaid
 Menu, ClickerMenu, Add, File, :FileMenu
 Menu, ClickerMenu, Add, Help, :HelpMenu
 Menu, ClickerMenu, Add, Options, :OptionsMenu
@@ -219,6 +221,25 @@ MenuMining:
 	Return
 }
 ;===================================================================================================
+; Switch to Raid  mode and update window
+MenuRaid:
+{
+	; Stop and current active AHK process
+	BreakLoop := 1
+
+	Gui, Destroy
+	Gui, Show, w500 h500, Temp
+	Gui, Menu, ClickerMenu
+	Gui, Add, Text,, Target Window Title : %targettitle%
+	Gui, Add, Text,, Windows HWIND is : %id%
+	Gui, Add, Text,, CURRENT AVALIBLE OPTIONS: 
+	Gui, Add, Text,, o- Pressing ctrl + alt + k will allow you to use a raid farm
+	Gui, Show,, Minecraft X-AHK V0.4
+
+	ProgState := 6
+	Return
+}
+;===================================================================================================
 ; Called when Ctrl+Alt+E is pressed.
 ; NOTE: Target window MUST be in focus for this to work
 JumpFly:
@@ -238,6 +259,29 @@ JumpFly:
 	ControlClick, , ahk_id %id%, ,Right, , NAD
 	Sleep 100
 	ControlClick, , ahk_id %id%, ,Right, , NAU
+	Return
+}
+;===================================================================================================
+; Called when Ctrl+Alt+F is pressed and continuly clicks RIGHT mouse key
+Fishing:
+{
+	if (ProgState != 2)
+		Return
+
+	BreakLoop := 0
+		Loop
+		{
+			if (BreakLoop = 1)
+			{
+				BreakLoop := 0
+				break
+			}
+
+			Sleep 100
+				ControlClick, , ahk_id %id%, ,Right, , NAD
+			Sleep 500
+				ControlClick, , ahk_id %id%, ,Right, , NAU
+		}
 	Return
 }
 ;===================================================================================================
@@ -266,29 +310,6 @@ Concrete:
 	Return
 }
 ;===================================================================================================
-; Called when Ctrl+Alt+F is pressed and continuly clicks RIGHT mouse key
-Fishing:
-{
-	if (ProgState != 2)
-		Return
-
-	BreakLoop := 0
-		Loop
-		{
-			if (BreakLoop = 1)
-			{
-				BreakLoop := 0
-				break
-			}
-
-			Sleep 100
-				ControlClick, , ahk_id %id%, ,Right, , NAD
-			Sleep 500
-				ControlClick, , ahk_id %id%, ,Right, , NAU
-		}
-	Return
-}
-;==================================================================================================
 ; Called when Ctrl+Alt+M is pressed
 MobGrind:
 {
@@ -310,7 +331,7 @@ MobGrind:
 			Return
 		}
 		
-		Sleep 100 ;100 ms
+		Sleep 167 ;Time in ms
 		;Delay between LEFT clicks is controled by sleep delay above * value tested here (ie 12)
 		; Example = 100ms * 12 = 1.2 seconds
 		;This method allows AHK to better exit this mode and respond quicker to Stop command
@@ -333,6 +354,7 @@ MobGrind:
 	ControlClick, , ahk_id %id%, ,Left, ,NAU
 	Return
 }
+;===================================================================================================
 ;Called when Ctrl+Alt+P is pressed
 Mining:
 {
@@ -355,6 +377,41 @@ if (ProgState != 5)
 			Return
 		}
 	}
+}
+;==================================================================================================
+RaidFarm:
+{
+	if (ProgState != 6)
+		Return
+		
+	BreakLoop := 0
+	Delay := 0
+	Sleep 500
+	While (BreakLoop = 0)
+	{
+		
+		Sleep 167 ;Time in ms
+		;Delay between LEFT clicks is controled by sleep delay above * value tested here (ie 12)
+		; Example = 100ms * 12 = 1.2 seconds
+		;This method allows AHK to better exit this mode and respond quicker to Stop command
+		if (Delay >= 12)
+		{
+			; If delay counter reached, reset counter and send a LEFT click
+			Delay := 0
+			sleep 50
+			ControlClick, , ahk_id %id%, ,Left, ,NAD
+			Sleep 50
+			ControlClick, , ahk_id %id%, ,Left, ,NAU	
+		}
+		else
+			Delay++ ;Increase delay counter by 1
+		
+	}
+	Sleep 100
+	;Force mouse keys UP at exit
+	ControlClick, , ahk_id %id%, ,Right, , NAU
+	ControlClick, , ahk_id %id%, ,Left, ,NAU
+	Return
 }
 ;==================================================================================================
 ; Called when Ctrl+Alt+S is pressed at ANYTIME
